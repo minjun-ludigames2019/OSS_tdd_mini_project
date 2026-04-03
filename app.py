@@ -25,12 +25,8 @@ def get_status():
 
 @app.route('/combat_tick')
 def combat_tick():
-    multiplier = 1
-    if game_state["eq_rarity"] == 0: multiplier = 1
-    elif game_state["eq_rarity"] == 1: multiplier = 2
-    elif game_state["eq_rarity"] == 2: multiplier = 5
-    elif game_state["eq_rarity"] == 3: multiplier = 15
-    elif game_state["eq_rarity"] == 4: multiplier = 50
+    rarity_multipliers = {0: 1, 1: 2, 2: 5, 3: 15, 4: 50}
+    multiplier = rarity_multipliers.get(game_state["eq_rarity"], 1)
         
     combat_power = int(game_state["eq_base_atk"] * multiplier * (1 + game_state["eq_level"] * 0.2))
     game_state["enemy_hp"] -= combat_power
