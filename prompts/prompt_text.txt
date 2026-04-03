@@ -1,0 +1,21 @@
+// 첫번째 프롬프트
+TDD 사이클을 시작할 거야. tests/test_app.py 파일을 하나 작성해줘.
+
+아직 app.py는 만들지 마.
+
+Flask 앱의 루트('/') 경로에 접속했을 때 200 OK와 'Welcome to TDD Service'라는 문구가 포함되어 있는지 확인하는 테스트 코드를 짜줘.
+
+이 테스트를 실행했을 때 ImportError가 발생하며 실패(RED)하는 게 목표야.
+
+
+
+
+
+// 두번째 프롬프트
+Flask를 이용해 루트 경로('/')에서 'Welcome to TDD Service'라는 문구가 나오는지 검증하는 코드여야 해.
+중요: 아직 app.py는 만들지 마. 내가 pytest를 실행해서 빨간색 에러(RED)가 뜨는 걸 먼저 확인하고 싶어.
+
+
+
+// 세번째 프롬프트
+현재 pytest를 실행했을 때 ModuleNotFoundError: No module named 'app' 에러가 발생하며 RED 단계를 확인했어. 이제 이 테스트를 통과할 수 있도록 app.py 파일을 작성해줘. Flask를 사용하고 루트 경로에서 'Welcome to TDD Service'를 반환해야 해.

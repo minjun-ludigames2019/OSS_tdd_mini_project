@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아머드 타워 MVP 프로토타입</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.2s ease-out; }
+        @keyframes bounce-dmg { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .anim-dmg { animation: bounce-dmg 0.2s ease-out; }
+    </style>
+</head>
+<body class="bg-black text-gray-100 font-sans flex justify-center h-screen overflow-hidden">
+    <div class="w-full max-w-md bg-gray-900 h-full flex flex-col border-x border-gray-800 relative shadow-2xl">
+        <div class="flex justify-between items-center p-3 bg-gray-950 border-b border-gray-800 z-10">
+            <div class="font-bold text-lg">층수: <span id="ui-stage">1</span>F</div>
+            <div class="flex items-center space-x-1 bg-yellow-900/30 px-3 py-1 rounded-full border border-yellow-700/50">
+                <span>💰</span><span id="ui-gold" class="font-mono font-bold text-yellow-400">0</span>
+            </div>
+        </div>
+        <div class="relative h-2/5 bg-gray-800 flex flex-col justify-end items-center overflow-hidden border-b-2 border-gray-950">
+            <div class="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
+                <div class="w-64 h-64 border-4 border-dashed border-gray-500 rounded-full animate-[spin_30s_linear_infinite]"></div>
+            </div>
+            <div id="log-container" class="absolute top-2 left-2 text-xs font-mono flex flex-col space-y-1 pointer-events-none drop-shadow-md"></div>
+            <div class="flex items-end justify-between w-3/4 mb-8 relative">
+                <div class="flex flex-col items-center">
+                    <div id="player-core" class="w-14 h-16 bg-blue-500 rounded-sm border-2 border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-transform duration-75">
+                        <div class="w-full h-2 bg-blue-300 mt-2 opacity-50"></div>
+                    </div>
+                    <div class="mt-2 text-xs font-bold text-blue-300">CORE</div>
+                </div>
+                <div id="dmg-text" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 text-red-500 font-bold text-xl italic hidden"></div>
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-2 bg-gray-700 rounded-full mb-2 overflow-hidden border border-gray-900">
+                        <div id="enemy-hp-bar" class="h-full bg-red-500 transition-all duration-200" style="width: 100%"></div>
+                    </div>
+                    <div id="enemy-body" class="w-12 h-12 bg-red-600 rotate-45 border-2 border-red-400 transition-all"></div>
+                </div>
+            </div>
+            <div class="w-full h-4 bg-gray-700 border-t border-gray-600"></div>
+        </div>
+        <div class="flex bg-gray-950 p-2 space-x-2">
+            <button onclick="switchTab('info')" id="tab-btn-info" class="flex-1 py-3 flex justify-center items-center rounded-t-lg transition-colors bg-gray-800 text-white border-t-2 border-blue-500">
+                <span>👤</span> <span class="text-sm font-bold ml-1">정보</span>
+            </button>
+            <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="flex-1 py-3 flex justify-center items-center rounded-t-lg transition-colors text-gray-500 hover:text-gray-300 relative">
+                <span>🎒</span> <span class="text-sm font-bold ml-1">가방</span>
+                <span id="inv-noti" class="hidden absolute top-2 right-4 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            </button>
+            <button onclick="switchTab('enhance')" id="tab-btn-enhance" class="flex-1 py-3 flex justify-center items-center rounded-t-lg transition-colors text-gray-500 hover:text-gray-300">
+                <span>🔨</span> <span class="text-sm font-bold ml-1">강화</span>
+            </button>
+        </div>
+        <div class="flex-1 p-4 overflow-y-auto bg-gray-800 custom-scrollbar relative">
+            <div id="tab-info" class="space-y-4 animate-in block">
+                <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 shadow-inner">
+                    <h3 class="text-gray-400 text-xs uppercase tracking-wider mb-1">Base Attack (Server)</h3>
+                    <div class="flex items-center text-3xl font-black text-blue-400">
+                        <span class="mr-2">⚔️</span><span id="ui-cp">10</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between bg-gray-900 p-3 rounded-lg">
+                        <span class="text-gray-400">장착 장비 등급</span>
+                        <span id="ui-eq-rarity" class="text-gray-400 font-bold">일반</span>
+                    </div>
+                    <div class="flex justify-between bg-gray-900 p-3 rounded-lg">
+                        <span class="text-gray-400">강화 보너스</span>
+                        <span id="ui-eq-bonus" class="text-green-400 font-bold">+0%</span>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-inventory" class="flex-col h-full animate-in hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm text-gray-400">보유 장비: <span id="ui-inv-count" class="text-white">0</span>개</div>
+                    <button onclick="handleSynthesize()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center shadow-lg active:scale-95 transition-all">
+                        ⬆️ 일괄 합성 (100G)
+                    </button>
+                </div>
+                <div class="bg-gray-900 flex-1 rounded-xl border border-gray-700 p-3 overflow-y-auto">
+                    <div id="inv-grid" class="grid grid-cols-5 gap-2"></div>
+                    <div id="inv-empty" class="flex items-center justify-center h-full text-gray-500 text-sm flex-col py-10">
+                        <span class="text-3xl mb-2 opacity-50">🎒</span>방치하여 장비를 파밍하세요
+                    </div>
+                </div>
+            </div>
+            <div id="tab-enhance" class="flex-col items-center justify-center h-full space-y-6 animate-in hidden mt-4">
+                <div class="relative flex justify-center">
+                    <div id="enhance-item-box" class="w-32 h-32 rounded-2xl bg-gray-400 border-4 border-gray-500 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center text-5xl">⚔️</div>
+                    <div id="enhance-level" class="absolute -bottom-3 ml-24 bg-gray-900 border-2 border-yellow-500 text-yellow-400 font-black px-3 py-1 rounded-full text-lg shadow-lg">+0</div>
+                </div>
+                <div class="text-center">
+                    <h2 id="enhance-name" class="text-xl font-bold text-gray-400 mb-1">일반 코어 블레이드</h2>
+                </div>
+                <div class="w-full bg-gray-900 rounded-xl p-4 border border-gray-700 flex flex-col items-center">
+                    <button onclick="handleEnhance()" id="btn-enhance" class="w-full py-4 rounded-xl font-black text-lg flex items-center justify-center shadow-lg transition-all active:scale-95 border border-gray-600">
+                        <span>🔨 강화하기</span>
+                        <div class="ml-4 flex items-center bg-black/30 px-2 py-1 rounded">
+                            <span class="mr-1">💰</span><span id="enhance-cost" class="font-mono text-white">50</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const RARITIES = [
+            { name: '일반', bg: 'bg-gray-400', text: 'text-gray-400', border: 'border-gray-500' },
+            { name: '고급', bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-600' },
+            { name: '희귀', bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-600' },
+            { name: '영웅', bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-600' },
+            { name: '전설', bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-600' }
+        ];
+
+        let logs = [];
+
+        function updateUIFromServer(state) {
+            document.getElementById('ui-gold').innerText = state.gold.toLocaleString();
+            document.getElementById('ui-stage').innerText = state.stage;
+            document.getElementById('ui-cp').innerText = state.eq_base_atk.toLocaleString();
+            
+            const rData = RARITIES[state.eq_rarity];
+            document.getElementById('ui-eq-rarity').innerText = rData.name;
+            document.getElementById('ui-eq-rarity').className = `${rData.text} font-bold`;
+            document.getElementById('ui-eq-bonus').innerText = `+${state.eq_level * 20}%`;
+
+            const invGrid = document.getElementById('inv-grid');
+            const invEmpty = document.getElementById('inv-empty');
+            document.getElementById('ui-inv-count').innerText = state.inventory.length;
+            
+            if(state.inventory.length > 0) {
+                invEmpty.classList.add('hidden');
+                invGrid.classList.remove('hidden');
+                invGrid.innerHTML = state.inventory.sort((a,b) => b - a).map(rarityIdx => `
+                    <div class="aspect-square rounded-md ${RARITIES[rarityIdx].bg} border-2 ${RARITIES[rarityIdx].border} shadow-inner flex items-center justify-center text-white opacity-80 text-sm">⚔️</div>
+                `).join('');
+            } else {
+                invEmpty.classList.remove('hidden');
+                invGrid.classList.add('hidden');
+            }
+
+            document.getElementById('enhance-item-box').className = `w-32 h-32 rounded-2xl ${rData.bg} border-4 ${rData.border} shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center text-5xl`;
+            document.getElementById('enhance-level').innerText = `+${state.eq_level}`;
+            document.getElementById('enhance-name').innerText = `${rData.name} 코어 블레이드`;
+            document.getElementById('enhance-name').className = `text-xl font-bold ${rData.text} mb-1`;
+            
+            const cost = 50 + (state.eq_level * 25);
+            document.getElementById('enhance-cost').innerText = cost;
+            const btnEnhance = document.getElementById('btn-enhance');
+            
+            if(state.gold >= cost) {
+                btnEnhance.className = "w-full py-4 rounded-xl font-black text-lg flex items-center justify-center shadow-lg transition-all active:scale-95 bg-gradient-to-r from-orange-600 to-red-600 text-white border border-red-400 cursor-pointer";
+            } else {
+                btnEnhance.className = "w-full py-4 rounded-xl font-black text-lg flex items-center justify-center shadow-lg transition-all bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600";
+            }
+
+            document.getElementById('enemy-hp-bar').style.width = `${Math.max(0, (state.enemy_hp / state.max_enemy_hp) * 100)}%`;
+        }
+
+        function addLog(msg, colorClass = 'text-gray-300') {
+            const id = Date.now() + Math.random();
+            logs.unshift({ id, msg, colorClass });
+            if(logs.length > 5) logs.pop();
+            
+            document.getElementById('log-container').innerHTML = logs.map(log => 
+                `<div class="${log.colorClass} animate-in drop-shadow-md">${log.msg}</div>`
+            ).join('');
+        }
+
+        function switchTab(tabName) {
+            ['info', 'inventory', 'enhance'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('flex');
+                document.getElementById(`tab-btn-${t}`).className = "flex-1 py-3 flex justify-center items-center rounded-t-lg transition-colors text-gray-500 hover:text-gray-300 relative";
+            });
+            const activeContent = document.getElementById(`tab-${tabName}`);
+            activeContent.classList.remove('hidden');
+            if(tabName !== 'info') activeContent.classList.add('flex');
+            
+            const btnClass = tabName === 'info' ? 'border-blue-500' : tabName === 'inventory' ? 'border-green-500' : 'border-orange-500';
+            document.getElementById(`tab-btn-${tabName}`).className = `flex-1 py-3 flex justify-center items-center rounded-t-lg transition-colors bg-gray-800 text-white border-t-2 ${btnClass} relative`;
+        }
+
+        // --- 백엔드(Python API) 통신 로직 --- //
+
+        // 1. 방치형 전투 틱 (1초마다 자동 실행)
+        setInterval(async () => {
+            try {
+                const res = await fetch('/combat_tick');
+                const data = await res.json();
+                
+                // 애니메이션
+                const playerCore = document.getElementById('player-core');
+                const enemyBody = document.getElementById('enemy-body');
+                const dmgText = document.getElementById('dmg-text');
+
+                playerCore.style.transform = "translateX(10px) scale(1.1)";
+                enemyBody.style.opacity = "0.7";
+                enemyBody.style.transform = "scale(0.9) rotate(45deg)";
+                
+                dmgText.innerText = `-${data.cp}`;
+                dmgText.classList.remove('hidden');
+                dmgText.classList.remove('anim-dmg');
+                void dmgText.offsetWidth; 
+                dmgText.classList.add('anim-dmg');
+
+                setTimeout(() => {
+                    playerCore.style.transform = "translateX(0) scale(1)";
+                    enemyBody.style.opacity = "1";
+                    enemyBody.style.transform = "scale(1) rotate(45deg)";
+                    dmgText.classList.add('hidden');
+                }, 200);
+
+                updateUIFromServer(data.state);
+                if(data.msg) addLog(data.msg, data.msg.includes('killed') ? 'text-yellow-400' : 'text-gray-300');
+
+            } catch(e) { console.error("서버 연결 실패", e); }
+        }, 1000);
+
+        // 2. 강화 버튼 클릭
+        async function handleEnhance() {
+            const res = await fetch('/enhance');
+            const data = await res.json();
+            if(data.error) addLog(data.error, 'text-red-400');
+            else {
+                addLog(data.msg, 'text-green-400');
+                updateUIFromServer(data.state);
+            }
+        }
+
+        // 3. 합성 버튼 클릭
+        async function handleSynthesize() {
+            const res = await fetch('/synthesize');
+            const data = await res.json();
+            if(data.error) addLog(data.error, 'text-red-400');
+            else {
+                addLog(data.msg, 'text-blue-400');
+                updateUIFromServer(data.state);
+            }
+        }
+
+        // 초기 구동 시 상태 한 번 불러오기
+        fetch('/status').then(r => r.json()).then(data => updateUIFromServer(data.state));
+        switchTab('inventory');
+    </script>
+</body>
+</html>
