@@ -1,6 +1,5 @@
+from app import app
 from flask import Flask, jsonify, render_template
-
-app = Flask(__name__)
 
 game_state = {
     "gold": 100,

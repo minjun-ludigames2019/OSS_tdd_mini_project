@@ -1,5 +1,9 @@
 import pytest
-from app import app, game_state
+# 1. app 객체는 app 패키지(__init__.py)에서 가져옵니다.
+from app import app
+# 2. game_state 변수는 실제 로직이 있는 routes.py에서 가져옵니다.
+from app.routes import game_state
+
 
 @pytest.fixture
 def client():
