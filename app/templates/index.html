@@ -75,6 +75,9 @@
                         <span id="ui-eq-bonus" class="text-green-400 font-bold">+0%</span>
                     </div>
                 </div>
+                <button onclick="logout()" class="w-full mt-4 py-3 bg-red-900/30 hover:bg-red-800/50 text-red-400 border border-red-800/50 rounded-xl transition-all font-bold text-sm">
+                    로그아웃
+                </button>
             </div>
             <div id="tab-inventory" class="flex-col h-full animate-in hidden">
                 <div class="flex justify-between items-center mb-4">
@@ -121,7 +124,17 @@
 
         let logs = [];
 
+        // 세션 만료(비로그인 상태) 체크 헬퍼 함수
+        function checkAuthError(res) {
+            if (res.status === 401) {
+                window.location.href = '/login';
+                return true;
+            }
+            return false;
+        }
+
         function updateUIFromServer(state) {
+            if (!state) return;
             document.getElementById('ui-gold').innerText = state.gold.toLocaleString();
             document.getElementById('ui-stage').innerText = state.stage;
             document.getElementById('ui-cp').innerText = state.eq_base_atk.toLocaleString();
@@ -190,10 +203,12 @@
 
         // --- 백엔드(Python API) 통신 로직 --- //
 
-        // 1. 방치형 전투 틱 (1초마다 자동 실행)
+        // 1. 방치형 전투 틱 (1초마다 자동 실행, API 주소 및 POST로 변경)
         setInterval(async () => {
             try {
-                const res = await fetch('/combat_tick');
+                const res = await fetch('/api/combat', { method: 'POST' });
+                if (checkAuthError(res)) return; // 로그아웃 상태면 리다이렉트
+
                 const data = await res.json();
                 
                 // 애니메이션
@@ -224,9 +239,11 @@
             } catch(e) { console.error("서버 연결 실패", e); }
         }, 1000);
 
-        // 2. 강화 버튼 클릭
+        // 2. 강화 버튼 클릭 (API 주소 및 POST로 변경)
         async function handleEnhance() {
-            const res = await fetch('/enhance');
+            const res = await fetch('/api/enhance', { method: 'POST' });
+            if (checkAuthError(res)) return;
+
             const data = await res.json();
             if(data.error) addLog(data.error, 'text-red-400');
             else {
@@ -235,9 +252,11 @@
             }
         }
 
-        // 3. 합성 버튼 클릭
+        // 3. 합성 버튼 클릭 (API 주소 및 POST로 변경)
         async function handleSynthesize() {
-            const res = await fetch('/synthesize');
+            const res = await fetch('/api/synthesize', { method: 'POST' });
+            if (checkAuthError(res)) return;
+
             const data = await res.json();
             if(data.error) addLog(data.error, 'text-red-400');
             else {
@@ -246,8 +265,19 @@
             }
         }
 
-        // 초기 구동 시 상태 한 번 불러오기
-        fetch('/status').then(r => r.json()).then(data => updateUIFromServer(data.state));
+        // 4. 로그아웃 (신규 추가)
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        }
+
+        // 초기 구동 시 상태 한 번 불러오기 (API 주소 변경)
+        fetch('/api/status').then(r => {
+            if (!checkAuthError(r)) return r.json();
+        }).then(data => {
+            if (data && data.state) updateUIFromServer(data.state);
+        });
+
         switchTab('inventory');
     </script>
 </body>
