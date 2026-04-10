@@ -40,7 +40,6 @@ cd OSS_tdd_mini_project
 
 # 2. 필수 패키지 설치
 pip install -r requirements.txt
-# (주의: requirements.txt에 flask, flasgger, sphinx 가 포함되어 있어야 합니다)
 
 # 3. 서버 실행 (포트 충돌 방지를 위해 5001 포트 사용)
 flask --app routes run --port=5001
