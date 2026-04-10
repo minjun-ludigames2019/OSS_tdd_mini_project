@@ -1,14 +1,19 @@
 # ⚔️ 아머드 타워 (Armored Tower) MVP
 > 안정적이고 확장 가능한 RESTful API 기반 방치형 RPG 시스템
 
-![게임 로그인 화면 스크린샷](docs/Readme_Image/game2.png)
-*▲ 게임 로그인 화면*
+<p align="center">
+  <img src="docs/Readme_Image/game2.png" width="48%" />
+  <img src="docs/Readme_Image/game1.png" width="48%" />
+</p>
+<p align="center">
+  <em>▲ 게임 로그인 화면 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ▲ 게임 메인 화면 및 전투 UI</em>
+</p>
 
-![게임 작동 시연 스크린샷](docs/Readme_Image/game1.png)
-*▲ 아머드 타워 게임 메인 화면 및 전투 UI*
-
-![Swagger API 명세서](docs/Readme_Image/swagger1.png)
-*▲ Flasgger를 활용한 인터랙티브 API 명세서*
+<p align="center">
+  <img src="docs/Readme_Image/swagger1.png" width="100%" />
+  <br>
+  <em>▲ Flasgger를 활용한 인터랙티브 API 명세서</em>
+</p>
 
 ## 📖 프로젝트 소개 (Motivation & Problem)
 단순히 동작만 하는 코드를 넘어, **"유지보수하기 좋고 다른 개발자가 사용하기 쉬운 시스템(DX)"**을 구축하는 것을 목표로 한 미니 프로젝트입니다. 기존의 단순한 함수 형태의 백엔드를 인증(Session)이 포함된 완전한 RESTful API 구조로 리팩토링하였으며, 코드와 문서의 동기화를 위해 자동 문서화 파이프라인을 도입했습니다.
@@ -49,4 +54,4 @@ flask --app routes run --port=5001
 ---
 
 ### 📚 기술 문서 링크
-* **Sphinx 자동 생성 기술 문서:** [https://minjun-ludigames2019.github.io/OSS_tdd_mini_project/](https://minjun-ludigames2019.github.io/OSS_tdd_mini_project/)
+* **Sphinx 자동 생성 기술 문서:** [https://minjun-ludigames2019.github.io/OSS_tdd_mini_project/build/html/index.html](https://minjun-ludigames2019.github.io/OSS_tdd_mini_project/build/html/index.html)
