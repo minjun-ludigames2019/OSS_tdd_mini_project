@@ -42,27 +42,211 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.combat_tick">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">combat_tick</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.combat_tick" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>전투 수행 (1 틱)
+적을 공격하고 HP가 0이 되면 보상을 획득합니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Game API</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 전투 결과 및 갱신된 게임 상태 반환</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.enhance">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">enhance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.enhance" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>장비 강화
+골드를 소모하여 장비 레벨을 올립니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Game API</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 강화 성공 여부 및 결과</p>
+</dd>
+<dt>400:</dt><dd><p>description: 골드 부족</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.get_status">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.get_status" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>현재 게임 상태 조회
+로그인한 유저의 현재 게임 진행 상태(골드, 스테이지 등)를 불러옵니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Game API</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 게임 상태 정보 반환</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.home">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.home" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>메인 게임 화면을 렌더링합니다.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.login">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.login" title="Link to this definition">¶</a></dt>
+<dd><p>사용자 로그인
+아이디와 비밀번호를 확인하고 세션을 생성합니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Auth API</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>-</em>) – <p>body
+in: body
+required: true
+schema:</p>
+<blockquote>
+<div><p>type: object
+properties:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>username:</dt><dd><p>type: string</p>
+</dd>
+<dt>password:</dt><dd><p>type: string</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 로그인 성공</p>
+</dd>
+<dt>401:</dt><dd><p>description: 비밀번호 불일치 또는 존재하지 않는 아이디</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.login_page">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">login_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.login_page" title="Link to this definition">¶</a></dt>
+<dd><p>로그인 및 회원가입 페이지를 렌더링합니다.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.logout">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.logout" title="Link to this definition">¶</a></dt>
+<dd><p>사용자 로그아웃
+현재 로그인된 세션을 파기합니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Auth API</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 로그아웃 성공</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.register">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.register" title="Link to this definition">¶</a></dt>
+<dd><p>신규 사용자 회원가입
+아이디와 비밀번호를 받아 새로운 계정을 생성합니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Auth API</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>-</em>) – <p>body
+in: body
+required: true
+schema:</p>
+<blockquote>
+<div><p>type: object
+properties:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>username:</dt><dd><p>type: string</p>
+</dd>
+<dt>password:</dt><dd><p>type: string</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>201:</dt><dd><p>description: 회원가입 성공</p>
+</dd>
+<dt>400:</dt><dd><p>description: 이미 존재하는 아이디</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.synthesize">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">synthesize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.synthesize" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>아이템 합성
+100G를 소모하여 인벤토리의 0등급 아이템 5개를 1등급 아이템 1개로 합성합니다.
+—
+tags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Game API</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>responses:</dt><dd><dl class="simple">
+<dt>200:</dt><dd><p>description: 합성 성공</p>
+</dd>
+<dt>400:</dt><dd><p>description: 골드 부족 또는 아이템 부족</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-app">
